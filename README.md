@@ -1,62 +1,76 @@
 # EvidenceHire: Multi-Agent Candidate Evaluation
 
-> **EvidenceHire** is an AI multi-agent recruitment and hiring assessment platform designed to eliminate hallucinations, blind consensus bias, and superficial resume screening. It enforces **strict evidence grounding** by extracting verifiable atomic evidence quotes, running 4 independent evaluator agents in parallel, orchestrating a cross-agent debate, and synthesizing an executive decision weighted by role-critical evidence rather than naive score averaging.
+> **EvidenceHire** is an AI multi-agent recruitment and hiring assessment platform designed to eliminate hallucinations, consensus bias, and superficial resume screening. It enforces **strict evidence grounding** by extracting verifiable atomic evidence quotes, running 4 independent evaluator agents in parallel, orchestrating a cross-agent debate with visible position revisions, and synthesizing executive decisions weighted by role-critical evidence rather than naive score averaging.
 
 ---
 
 ## Key Features
 
-- **Dual Candidate Bench Evaluation (Candidate A & Candidate B)**: Simultaneously processes Candidate A (e.g. Alex Chen) and Candidate B (e.g. Jordan Taylor) against the same role requirements, rendering independent 4-stage evaluation reports for each candidate and a bonus comparative synthesis.
-- **Atomic Evidence Bank Extraction**: Parses candidate resume and interview transcript into discrete, indexed evidence items (`E1`, `E2`, etc.) with exact quotes and source attribution (`Resume` vs `Transcript`).
-- **Four Genuinely Independent Evaluators**:
+- **Stage 0: Ideal Candidate Blueprint**: Authoritative role requirements decomposed into critical capabilities, differentiators, nice-to-haves, production ownership expectations, and key interview validation risks.
+- **Dual Candidate Bench Evaluation (Candidate A & Candidate B)**: Simultaneously processes Candidate A and Candidate B against shared role requirements, rendering independent evaluation dossiers for each candidate alongside a comparative synthesis.
+- **Browser-Local 5-PDF Extraction**: Upload the 5 challenge PDFs (Job Description, Candidate A Resume & Transcript, Candidate B Resume & Transcript) with instant, client-side text extraction and preview.
+- **Dynamic Grounded Evidence Bank**: Extracts discrete, indexed evidence items (`A-E1`, `A-E2`... / `B-E1`, `B-E2`...) with verbatim quotes and source attribution (`Resume` vs `Transcript`).
+- **Four Independent Evaluators**:
   - **Technical Evaluator** (*Principal Systems Architect*): Tests system design depth, language mastery, profiling, and scale.
   - **HR / Culture Evaluator** (*VP of People & Culture*): Scrutinizes communication, psychological safety, mentorship, and team dynamics.
-  - **Hiring Manager** (*Director of Platform Engineering*): Focuses on practical ROI, execution velocity, Tier-1 resilience, and business impact.
+  - **Hiring Manager** (*Director of Platform Engineering*): Focuses on practical ROI, execution velocity, operational resilience, and business impact.
   - **Skeptic / Risk Evaluator** (*Principal Risk & Rigor Auditor*): Challenges resume boasts against interview admissions and catches discrepancies.
-  - *Strict Isolation*: Each evaluator receives *only* the job requirements, candidate profile, and evidence bank—completely blind to other evaluators' thoughts.
-- **Explicit Visible Opinion Shifts in Debate**:
-  - Evaluators directly challenge, cross-examine, and qualify each other's claims (`agree`, `disagree`, `qualify`).
-  - Highlights **"Initial View → Updated View"** with visible opinion shift badges when counter-evidence causes an agent to concede, qualify, or revise its stance (`changedAfterDebate: true`).
-- **Evidence-Weighted Decision Synthesizer**: Synthesizes the final decision based on role-critical skills, verified impact, candidate integrity/candor, and unresolved risks. A single verified deal-breaker can outweigh multiple generic positives.
-- **Strict Evidence Grounding**: Every factual claim must cite supplied evidence IDs (`E1`, `E2`), and any unproven areas must be noted as *"insufficient evidence"*.
-- **Zero-Setup Demo Mode & Live Gemini Mode**: Runs out-of-the-box in mock simulation mode with a realistic built-in candidate, or connects seamlessly to Google Gemini via `GEMINI_API_KEY`.
+  - *Strict Isolation*: Each evaluator receives *only* the job requirements, candidate profile, and evidence bank—completely blind to other evaluators.
+- **Explicit Opinion Shifts in Multi-Agent Debate**:
+  - Evaluators directly cross-examine and qualify each other's claims (`agree`, `disagree`, `qualify`).
+  - Highlights **"Initial View → Updated View"** with opinion shift badges when counter-evidence causes an agent to concede or revise its stance (`changedAfterDebate: true`).
+- **Evidence-Weighted Decision Synthesizer**: Synthesizes the final decision based on role-critical skills, verified impact, candidate integrity/candor, and decisive evidence.
+- **Stage 5: Comparative Hiring Committee**: Side-by-side executive summary, 9-dimension Capability Matrix, Evidence & Risk Lens, debate impact analysis, and follow-up interview blueprints.
+- **Dynamic Input-Driven Mock Engine & Live Gemini Mode**: Runs with live Google Gemini API or an input-based dynamic mock engine that parses names and real quotes from uploaded materials without requiring an API key.
 
 ---
 
 ## Architecture Overview
 
 ```
-                          ┌───────────────────────────┐
-                          │   Recruiter Input Dossier │
-                          │ Job + Resume + Transcript │
-                          └─────────────┬─────────────┘
-                                        │
-                                        ▼
-                          ┌───────────────────────────┐
-                          │  Stage 1: Evidence Bank   │
-                          │  Quotes: [E1], [E2]...    │
-                          └─────────────┬─────────────┘
-                                        │
-                 ┌──────────────────────┼──────────────────────┐
-                 ▼                      ▼                      ▼
-        ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-        │  Technical Eval │    │  Culture/HR Eval│    │  Hiring Manager │    │   Skeptic Eval  │
-        │  (Isolated)     │    │  (Isolated)     │    │  (Isolated)     │    │   (Isolated)    │
-        └────────┬────────┘    └────────┬────────┘    └────────┬────────┘    └────────┬────────┘
-                 │                      │                      │                      │
-                 └──────────────────────┼──────────────────────┘                      │
-                                        │
-                                        ▼
-                          ┌───────────────────────────┐
-                          │    Stage 3: Agent Debate  │
-                          │ Cross-examination of claims│
-                          └─────────────┬─────────────┘
-                                        │
-                                        ▼
-                          ┌───────────────────────────┐
-                          │ Stage 4: Decision Synth   │
-                          │ Evidence-weighted decision│
-                          └───────────────────────────┘
+                      ┌──────────────────────────────────────────────┐
+                      │    Stage 0: Ideal Candidate Blueprint        │
+                      │    Capabilities, Differentiators, Risks      │
+                      └──────────────────────┬───────────────────────┘
+                                             │
+                      ┌──────────────────────▼───────────────────────┐
+                      │   5-PDF Dossier Extraction (Browser-Local)   │
+                      │   Job Description + Candidate A & B Materials│
+                      └──────────────────────┬───────────────────────┘
+                                             │
+                      ┌──────────────────────▼───────────────────────┐
+                      │  Stage 1: Grounded Evidence Banks (A & B)    │
+                      │  Verbatim Quotes: [A-E1...], [B-E1...]       │
+                      └──────────────────────┬───────────────────────┘
+                                             │
+             ┌───────────────────────────────┼───────────────────────────────┐
+             ▼                               ▼                               ▼
+    ┌─────────────────┐             ┌─────────────────┐             ┌─────────────────┐
+    │  Technical Eval │             │  Culture/HR Eval│             │  Hiring Manager │
+    │  (Isolated)     │             │  (Isolated)     │             │  (Isolated)     │
+    └────────┬────────┘             └────────┬────────┘             └────────┬────────┘
+             │                               │                               │
+             └───────────────────────────────┼───────────────────────────────┘
+                                             │
+                                    ┌────────▼────────┐
+                                    │   Skeptic Eval  │
+                                    │   (Isolated)    │
+                                    └────────┬────────┘
+                                             │
+                                    ┌────────▼────────┐
+                                    │  Stage 3: Debate│
+                                    │  Opinion Shifts │
+                                    └────────┬────────┘
+                                             │
+                                    ┌────────▼────────┐
+                                    │ Stage 4: Synth  │
+                                    │ Final Decision  │
+                                    └────────┬────────┘
+                                             │
+                                    ┌────────▼───────────────────────┐
+                                    │ Stage 5: Comparative Committee │
+                                    │ 9-Dim Matrix & Decision Logic  │
+                                    └────────────────────────────────┘
 ```
 
 ---
@@ -72,15 +86,7 @@
 Install all root, server, and client dependencies:
 
 ```bash
-npm run install:all
-```
-
-Or install manually:
-```bash
 npm install
-cd server && npm install
-cd ../client && npm install
-cd ..
 ```
 
 ### 2. Environment Configuration (Optional for Live Mode)
@@ -91,14 +97,14 @@ Create a `.env` file in the root or `server/` directory (see `.env.example`):
 # Server Port
 PORT=3001
 
-# Google Gemini API Key (Optional: leave empty to use built-in mock simulation mode)
+# Google Gemini API Key (Optional: leave empty to use built-in dynamic mock engine)
 GEMINI_API_KEY=your_gemini_api_key_here
 
 # Supported Gemini Model (Default: gemini-2.5-flash)
 GEMINI_MODEL=gemini-2.5-flash
 ```
 
-> **Note**: If `GEMINI_API_KEY` is not provided, EvidenceHire automatically runs in high-fidelity mock simulation mode so you can test and explore the full workflow immediately with zero setup!
+> **Note**: If `GEMINI_API_KEY` is not provided, EvidenceHire automatically uses the dynamic input-based mock engine to extract real names, skills, and quotes from your uploaded PDFs.
 
 ### 3. Run Locally
 
@@ -113,16 +119,15 @@ npm run dev
 
 ---
 
-## Testing the Evaluation Flow
+## How to Use EvidenceHire
 
 1. Open [http://localhost:5173](http://localhost:5173).
-2. Click **"Load Demo Candidate"** to populate the input dossier with a realistic Staff Distributed Systems Engineer profile.
-3. Click **"Run Multi-Agent Evaluation"**.
-4. Observe the 4-stage pipeline execution:
-   - **Evidence Bank**: Review the verbatim quotes and extracted facts labeled `[E1]`, `[E2]`, etc.
-   - **Evaluator Cards**: Review the 4 independent scorecards (Technical, Culture, Hiring Manager, Skeptic) with confidence bars and cited strengths/concerns.
-   - **Debate Room**: Watch the agents cross-examine claims (e.g. Skeptic flagging the resume vs interview discrepancy regarding Kafka architectural ownership).
-   - **Final Report**: Review the executive recommendation, decisive evidence points, and custom follow-up interview questions.
+2. **Upload five PDFs** across the three tabs (Job Description, Candidate A, Candidate B) or click **"Load Official Demo Candidates"**.
+3. Click **"Evaluate Both Candidates"** (or Evaluate Both Candidates A & B).
+4. Review:
+   - **Stage 0: Ideal Candidate Blueprint**: Inspect the role mission, critical capabilities, differentiators, and ownership expectations.
+   - **Candidate A & Candidate B Reports**: Inspect the 9-stage evaluation dossiers (Overview, Ideal Fit, Evidence Bank, 4 Independent Evaluators, Debate Room with opinion shifts, and Final Decision Report).
+   - **Stage 5: Comparative Hiring Committee**: Examine the Executive Summary, Stage 0 Fit Overlay, 9-Dimension Capability Matrix, Evidence & Risk Lens, Debate Impact, and Final Hiring Recommendation.
 
 ---
 
@@ -136,6 +141,11 @@ npm run type-check
 To build production bundles:
 ```bash
 npm run build
+```
+
+To run automated pipeline verification:
+```bash
+cd server && npx tsx src/test-maya-leo.ts
 ```
 
 ---
@@ -157,8 +167,10 @@ promptwars-26BCE5106/
 │       ├── gemini.ts         # @google/genai wrapper & JSON parser
 │       ├── prompts.ts        # System prompts & JSON schemas
 │       ├── mockData.ts       # Built-in demo candidate dataset
+│       ├── test-maya-leo.ts  # Automated verification test suite
 │       └── services/
-│           └── pipelineService.ts # Multi-agent pipeline orchestrator
+│           ├── pipelineService.ts   # Multi-agent pipeline orchestrator
+│           └── dynamicMockEngine.ts # Input-driven mock evaluation engine
 └── client/                   # Frontend React + Vite + TypeScript
     ├── package.json
     ├── vite.config.ts
@@ -168,17 +180,23 @@ promptwars-26BCE5106/
         ├── types.ts          # Frontend data models
         ├── sampleData.ts     # Demo presets & fallback response
         ├── main.tsx          # React root mount
-        ├── App.tsx           # Main application view
+        ├── App.tsx           # Main application view & state manager
         ├── services/
-        │   └── api.ts        # API client & health check
+        │   ├── api.ts            # API client & health check
+        │   ├── pdfExtractor.ts   # Browser-local PDF parser (pdfjs-dist)
+        │   └── nameExtractor.ts  # Client-side candidate name extraction
         └── components/
-            ├── Header.tsx           # Top navigation & status badge
-            ├── InputForm.tsx        # Dossier input form & demo loader
-            ├── ProgressBanner.tsx   # Live stage progress indicator
-            ├── EvidenceBankView.tsx # Grounded evidence bank inspector
-            ├── EvaluatorCards.tsx   # 4 Independent blind evaluator cards
-            ├── DebateView.tsx       # Cross-agent debate dialogue
-            └── FinalReportCard.tsx  # Executive decision synthesis
+            ├── Header.tsx                     # Top navigation & status badge
+            ├── PdfUploadPanel.tsx             # 3-tab upload cards & text preview
+            ├── BlueprintView.tsx              # Stage 0 Ideal Blueprint viewer
+            ├── ProgressBanner.tsx             # Live stage progress indicator
+            ├── CandidateReportView.tsx        # 9-stage candidate dossier viewer
+            ├── ComparativeHiringCommittee.tsx # Stage 5 comparative committee
+            ├── EvidenceBankView.tsx           # Grounded evidence bank inspector
+            ├── EvaluatorCards.tsx             # 4 blind evaluator cards
+            ├── DebateView.tsx                 # Cross-agent debate dialogue
+            ├── FinalReportCard.tsx            # Executive decision synthesis
+            └── CitationModal.tsx              # Universal evidence citation popup
 ```
 
 ---
