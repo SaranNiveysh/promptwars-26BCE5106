@@ -12,7 +12,7 @@ import {
   DEMO_CANDIDATE_B,
 } from '../sampleData';
 
-const API_BASE = '/api';
+const API_BASE = 'https://promptwars-26-bce-5106-cww8-hnby8pmg3-saranniveysh.vercel.app/api';
 
 export async function checkServerHealth(): Promise<ServerHealth> {
   try {
