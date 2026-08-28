@@ -9,7 +9,6 @@ import { EvaluationInput, BatchEvaluationInput } from './types.js';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
@@ -83,10 +82,4 @@ app.post('/api/evaluate-batch', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`====================================================`);
-  console.log(` EvidenceHire Backend running on http://localhost:${PORT}`);
-  console.log(` Gemini API Configured: ${isGeminiConfigured() ? 'YES (Live Mode)' : 'NO (Mock Mode)'}`);
-  console.log(` Model Name: ${getGeminiModelName()}`);
-  console.log(`====================================================`);
-});
+export default app;
