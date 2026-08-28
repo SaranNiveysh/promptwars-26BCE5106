@@ -1,0 +1,26 @@
+{
+  "name": "evidencehire",
+  "version": "1.0.0",
+  "description": "EvidenceHire: Multi-Agent Candidate Evaluation with Grounded Evidence Citations",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "build": "npm run build --prefix server && npm run build --prefix client",
+    "install:all": "npm install && npm install --prefix server && npm install --prefix client",
+    "type-check": "npm run type-check --prefix server && npm run type-check --prefix client"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "keywords": [
+    "ai",
+    "gemini",
+    "recruiting",
+    "multi-agent",
+    "hackathon"
+  ],
+  "author": "",
+  "license": "MIT"
+}
